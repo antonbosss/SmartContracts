@@ -32,17 +32,30 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       initialDate: '1970-01-01T00:00:00Z',
+      gas: 'auto',
       // forking: {
       //   url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       // },
       // forking: {
+      //   url: `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+      // },
+      // forking: {
+      //   url: `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
+      // },
+      // forking: {
       //   url: `https://arbitrum-sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
+      // },
+      // forking: {
+      //   url: `https://arb-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
       // },
       // forking: {
       //   url: `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
       // },
       // forking: {
       //   url: `https://polygon-mumbai.blockpi.network/v1/rpc/public`,
+      // },
+      // forking: {
+      //   url: `https://base-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
       // },
     },
     localhost: {
@@ -69,6 +82,11 @@ const config: HardhatUserConfig = {
     },
     mumbai: {
       url: `https://polygon-mumbai.blockpi.network/v1/rpc/public`,
+      accounts: privateKey(),
+      gasMultiplier: 1.1,
+    },
+    polygonAmoy: {
+      url: `https://polygon-amoy.blockpi.network/v1/rpc/public`,
       accounts: privateKey(),
       gasMultiplier: 1.1,
     },
@@ -113,6 +131,16 @@ const config: HardhatUserConfig = {
       accounts: privateKey(),
       gasMultiplier: 1.1,
     },
+    base_sepolia: {
+      url: `https://sepolia.base.org`,
+      accounts: privateKey(),
+      gasMultiplier: 1.1,
+    },
+    base: {
+      url: `https://base-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
+      accounts: privateKey(),
+      gasMultiplier: 1.1,
+    },
   },
   solidity: {
     version: '0.8.20',
@@ -132,12 +160,15 @@ const config: HardhatUserConfig = {
       bscTestnet: `${process.env.BSCSCAN_KEY}`,
       bsc: `${process.env.BSCSCAN_KEY}`,
       polygonMumbai: `${process.env.POLYGONSCAN_KEY}`,
+      polygonAmoy: `${process.env.POLYGONSCAN_KEY}`,
       polygon: `${process.env.POLYGONSCAN_KEY}`,
       avalancheFujiTestnet: `${process.env.AVALANCHE_KEY}`,
       avalanche: `${process.env.AVALANCHE_KEY}`,
       arbitrumOne: `${process.env.ARBITRUM_KEY}`,
       arbitrumGoerli: `${process.env.ETHERSCAN_KEY}`,
       arbitrum_sepolia: `${process.env.ARBITRUM_KEY}`,
+      base_sepolia: `${process.env.BASE_KEY}`,
+      base: `${process.env.BASE_KEY}`,
     },
     customChains: [
       {
@@ -146,6 +177,22 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: 'https://api-sepolia.arbiscan.io/api',
           browserURL: 'https://sepolia.arbiscan.io/',
+        },
+      },
+      {
+        network: 'base_sepolia',
+        chainId: 84532,
+        urls: {
+          apiURL: 'https://api-sepolia.basescan.org/api',
+          browserURL: 'https://sepolia.base.io/',
+        },
+      },
+      {
+        network: 'polygonAmoy',
+        chainId: 80002,
+        urls: {
+          apiURL: 'https://api-amoy.polygonscan.com/api',
+          browserURL: 'https://amoy.polygonscan.com',
         },
       },
     ],

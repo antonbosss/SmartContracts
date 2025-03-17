@@ -4,7 +4,7 @@ import { ethers } from 'hardhat';
 
 import {
   Distribution,
-  DistributionV2,
+  DistributionV2Mock,
   Distribution__factory,
   GatewayRouterMock,
   IDistribution,
@@ -52,7 +52,6 @@ describe('Distribution', () => {
   let l2TokenReceiver: L2TokenReceiverV2;
 
   before(async () => {
-    await setTime(oneHour);
     [OWNER, SECOND] = await ethers.getSigners();
 
     const [
@@ -181,6 +180,8 @@ describe('Distribution', () => {
     await l1Sender.transferOwnership(distribution);
 
     await reverter.snapshot();
+
+    // await setTime(oneHour + 200);
   });
 
   afterEach(reverter.revert);
@@ -234,18 +235,20 @@ describe('Distribution', () => {
 
     describe('#_authorizeUpgrade', () => {
       it('should correctly upgrade', async () => {
-        const distributionV2Factory = await ethers.getContractFactory('DistributionV2', {
+        const distributionV2MockFactory = await ethers.getContractFactory('DistributionV2Mock', {
           libraries: {
             LinearDistributionIntervalDecrease: await lib.getAddress(),
           },
         });
-        const distributionV2Implementation = await distributionV2Factory.deploy();
+        const distributionV2MockImplementation = await distributionV2MockFactory.deploy();
 
-        await distribution.upgradeTo(await distributionV2Implementation.getAddress());
+        await distribution.upgradeTo(await distributionV2MockImplementation.getAddress());
 
-        const distributionV2 = distributionV2Factory.attach(await distribution.getAddress()) as DistributionV2;
+        const distributionV2Mock = distributionV2MockFactory.attach(
+          await distribution.getAddress(),
+        ) as DistributionV2Mock;
 
-        expect(await distributionV2.version()).to.eq(2);
+        expect(await distributionV2Mock.version()).to.eq(2);
       });
       it('should revert if caller is not the owner', async () => {
         await expect(distribution.connect(SECOND).upgradeTo(ZERO_ADDR)).to.be.revertedWith(
